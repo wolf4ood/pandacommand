@@ -1,0 +1,6 @@
+{
+	"name" : "Panda torrent",
+	"description" : "Panda plugin for transmission",
+	"entry" : "pandatorrent",	
+	"version" : "0.0.1"
+}
