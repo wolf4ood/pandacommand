@@ -1,0 +1,34 @@
+--- !Project
+path: /home/maggiolo00/Vala/pandacommand
+name: pandacommand
+author: Enrico Risa
+version: 0.0.1
+license: /usr/share/common-licenses/GPL-2
+builder: Native
+builder-options: !NativeBuilderOptions
+  debug: true
+  thread: true
+  disable-assert: false
+  disable-checking: false
+  disable-non-null: false
+  save-temps: false
+  quiet: false
+  other: ' -g --save-temps '
+executable-options:
+  program: 
+  arguments: 
+  working-dir: /home/maggiolo00/Vala/pandacommand/
+  environment: []
+files:
+- path: COPYING
+- path: main.vala
+- path: PandaServer.vala
+- path: PandaPlayer.vala
+- path: PandaClient.vala
+packages:
+- name: gstreamer-0.10
+- name: libsoup-2.4
+- name: xmms2-client
+- name: gee-1.0
+vapi_dir:
+- path: /home/maggiolo00/Vala/pandacommand/vapi
