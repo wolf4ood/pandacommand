@@ -62,30 +62,44 @@ static void panda_player_finalize (GObject* obj);
 
 
 
+#line 59 "PandaPlayer.vala"
 static gboolean _panda_player_bus_callback_gst_bus_func (GstBus* bus, GstMessage* message, gpointer self) {
+#line 68 "PandaPlayer.c"
 	gboolean result;
 	result = panda_player_bus_callback (self, bus, message);
 	return result;
 }
 
 
+#line 6 "PandaPlayer.vala"
 PandaPlayer* panda_player_construct (GType object_type) {
+#line 77 "PandaPlayer.c"
 	PandaPlayer * self;
 	GstElement* _tmp0_;
 	GstBus* bus;
+#line 6 "PandaPlayer.vala"
 	self = (PandaPlayer*) g_object_new (object_type, NULL);
+#line 9 "PandaPlayer.vala"
 	self->priv->player = (_tmp0_ = gst_element_factory_make ("playbin", "player"), _gst_object_unref0 (self->priv->player), _tmp0_);
+#line 10 "PandaPlayer.vala"
 	g_assert (self->priv->player != NULL);
+#line 12 "PandaPlayer.vala"
 	bus = gst_element_get_bus (self->priv->player);
+#line 13 "PandaPlayer.vala"
 	gst_bus_add_watch_full (bus, G_PRIORITY_DEFAULT, _panda_player_bus_callback_gst_bus_func, g_object_ref (self), g_object_unref);
+#line 15 "PandaPlayer.vala"
 	gst_element_set_state (self->priv->player, GST_STATE_NULL);
+#line 93 "PandaPlayer.c"
 	_gst_object_unref0 (bus);
 	return self;
 }
 
 
+#line 6 "PandaPlayer.vala"
 PandaPlayer* panda_player_new (void) {
+#line 6 "PandaPlayer.vala"
 	return panda_player_construct (TYPE_PANDA_PLAYER);
+#line 103 "PandaPlayer.c"
 }
 
 
@@ -94,29 +108,47 @@ static inline void _dynamic_set_uri0 (GstElement* obj, const char* value) {
 }
 
 
+#line 19 "PandaPlayer.vala"
 void panda_player_open (PandaPlayer* self, const char* stream) {
+#line 19 "PandaPlayer.vala"
 	g_return_if_fail (self != NULL);
+#line 19 "PandaPlayer.vala"
 	g_return_if_fail (stream != NULL);
+#line 21 "PandaPlayer.vala"
 	_dynamic_set_uri0 (self->priv->player, stream);
+#line 23 "PandaPlayer.vala"
 	gst_element_set_state (self->priv->player, GST_STATE_READY);
+#line 122 "PandaPlayer.c"
 }
 
 
+#line 27 "PandaPlayer.vala"
 void panda_player_play (PandaPlayer* self) {
+#line 27 "PandaPlayer.vala"
 	g_return_if_fail (self != NULL);
+#line 29 "PandaPlayer.vala"
 	gst_element_set_state (self->priv->player, GST_STATE_PLAYING);
+#line 132 "PandaPlayer.c"
 }
 
 
+#line 33 "PandaPlayer.vala"
 void panda_player_pause (PandaPlayer* self) {
+#line 33 "PandaPlayer.vala"
 	g_return_if_fail (self != NULL);
+#line 35 "PandaPlayer.vala"
 	gst_element_set_state (self->priv->player, GST_STATE_PAUSED);
+#line 142 "PandaPlayer.c"
 }
 
 
+#line 39 "PandaPlayer.vala"
 void panda_player_stop (PandaPlayer* self) {
+#line 39 "PandaPlayer.vala"
 	g_return_if_fail (self != NULL);
+#line 41 "PandaPlayer.vala"
 	gst_element_set_state (self->priv->player, GST_STATE_READY);
+#line 152 "PandaPlayer.c"
 }
 
 
@@ -127,21 +159,33 @@ static inline char* _dynamic_get_uri1 (GstElement* obj) {
 }
 
 
+#line 44 "PandaPlayer.vala"
 char* panda_player_get_uri (PandaPlayer* self) {
+#line 165 "PandaPlayer.c"
 	char* result = NULL;
+#line 44 "PandaPlayer.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 169 "PandaPlayer.c"
 	result = _dynamic_get_uri1 (self->priv->player);
+#line 45 "PandaPlayer.vala"
 	return result;
+#line 173 "PandaPlayer.c"
 }
 
 
+#line 47 "PandaPlayer.vala"
 static void panda_player_foreach_tag (PandaPlayer* self, GstTagList* list, const char* tag) {
+#line 179 "PandaPlayer.c"
 	const char* _tmp2_;
 	GQuark _tmp3_;
 	static GQuark _tmp3__label0 = 0;
+#line 47 "PandaPlayer.vala"
 	g_return_if_fail (self != NULL);
+#line 47 "PandaPlayer.vala"
 	g_return_if_fail (list != NULL);
+#line 47 "PandaPlayer.vala"
 	g_return_if_fail (tag != NULL);
+#line 189 "PandaPlayer.c"
 	_tmp2_ = tag;
 	_tmp3_ = (NULL == _tmp2_) ? 0 : g_quark_from_string (_tmp2_);
 	if (_tmp3_ == ((0 != _tmp3__label0) ? _tmp3__label0 : (_tmp3__label0 = g_quark_from_static_string ("title"))))
@@ -152,30 +196,46 @@ static void panda_player_foreach_tag (PandaPlayer* self, GstTagList* list, const
 			char* _tmp0_ = NULL;
 			char* _tmp1_;
 			tag_string = NULL;
+#line 51 "PandaPlayer.vala"
 			gst_tag_list_get_string (list, tag, &_tmp0_);
+#line 51 "PandaPlayer.vala"
 			tag_string = (_tmp1_ = _tmp0_, _g_free0 (tag_string), _tmp1_);
+#line 52 "PandaPlayer.vala"
 			fprintf (stdout, "tag: %s = %s\n", tag, tag_string);
+#line 206 "PandaPlayer.c"
 			_g_free0 (tag_string);
+#line 53 "PandaPlayer.vala"
 			break;
+#line 210 "PandaPlayer.c"
 		}
 	} else
 	switch (0) {
 		default:
 		{
+#line 55 "PandaPlayer.vala"
 			break;
+#line 218 "PandaPlayer.c"
 		}
 	}
 }
 
 
+#line 59 "PandaPlayer.vala"
 static gboolean panda_player_bus_callback (PandaPlayer* self, GstBus* bus, GstMessage* message) {
+#line 226 "PandaPlayer.c"
 	gboolean result = FALSE;
 	char* debug;
+#line 59 "PandaPlayer.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 59 "PandaPlayer.vala"
 	g_return_val_if_fail (bus != NULL, FALSE);
+#line 59 "PandaPlayer.vala"
 	g_return_val_if_fail (message != NULL, FALSE);
+#line 61 "PandaPlayer.vala"
 	debug = NULL;
+#line 62 "PandaPlayer.vala"
 	switch (message->type) {
+#line 239 "PandaPlayer.c"
 		case GST_MESSAGE_ERROR:
 		{
 			GError* err;
@@ -184,27 +244,42 @@ static gboolean panda_player_bus_callback (PandaPlayer* self, GstBus* bus, GstMe
 			char* _tmp2_ = NULL;
 			char* _tmp3_;
 			err = NULL;
+#line 68 "PandaPlayer.vala"
 			(gst_message_parse_error (message, &_tmp0_, &_tmp2_), err = (_tmp1_ = _tmp0_, _g_error_free0 (err), _tmp1_));
+#line 68 "PandaPlayer.vala"
 			debug = (_tmp3_ = _tmp2_, _g_free0 (debug), _tmp3_);
+#line 69 "PandaPlayer.vala"
 			fprintf (stdout, "Error: %s\n", err->message);
+#line 254 "PandaPlayer.c"
 			_g_error_free0 (err);
+#line 71 "PandaPlayer.vala"
 			break;
+#line 258 "PandaPlayer.c"
 		}
 		case GST_MESSAGE_EOS:
 		{
+#line 75 "PandaPlayer.vala"
 			fprintf (stdout, "end of stream\n");
+#line 77 "PandaPlayer.vala"
 			break;
+#line 266 "PandaPlayer.c"
 		}
 		case GST_MESSAGE_STATE_CHANGED:
 		{
 			GstState oldstate = 0;
 			GstState newstate = 0;
 			GstState pending = 0;
+#line 84 "PandaPlayer.vala"
 			gst_message_parse_state_changed (message, &oldstate, &newstate, &pending);
+#line 86 "PandaPlayer.vala"
 			if (debug != NULL) {
+#line 87 "PandaPlayer.vala"
 				fprintf (stdout, "state changed: %s->%s:%s\n", gst_element_state_get_name (oldstate), gst_element_state_get_name (newstate), gst_element_state_get_name (pending));
+#line 279 "PandaPlayer.c"
 			}
+#line 92 "PandaPlayer.vala"
 			break;
+#line 283 "PandaPlayer.c"
 		}
 		case GST_MESSAGE_TAG:
 		{
@@ -212,21 +287,32 @@ static gboolean panda_player_bus_callback (PandaPlayer* self, GstBus* bus, GstMe
 			GstTagList* _tmp4_ = NULL;
 			GstTagList* _tmp5_;
 			tag_list = NULL;
+#line 97 "PandaPlayer.vala"
 			fprintf (stdout, "taglist found\n");
+#line 98 "PandaPlayer.vala"
 			gst_message_parse_tag (message, &_tmp4_);
+#line 98 "PandaPlayer.vala"
 			tag_list = (_tmp5_ = _tmp4_, _gst_tag_list_free0 (tag_list), _tmp5_);
+#line 99 "PandaPlayer.vala"
 			gst_tag_list_foreach (tag_list, (GstTagForeachFunc) panda_player_foreach_tag, NULL);
+#line 299 "PandaPlayer.c"
 			_gst_tag_list_free0 (tag_list);
+#line 101 "PandaPlayer.vala"
 			break;
+#line 303 "PandaPlayer.c"
 		}
 		default:
 		{
+#line 104 "PandaPlayer.vala"
 			break;
+#line 309 "PandaPlayer.c"
 		}
 	}
 	result = TRUE;
 	_g_free0 (debug);
+#line 108 "PandaPlayer.vala"
 	return result;
+#line 316 "PandaPlayer.c"
 }
 
 

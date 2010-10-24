@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=620">
+<title>HTML5 Demo: Web Socket</title>
+<link rel="stylesheet" href="/css/html5demos.css" type="text/css">
+<script src="http://code.jquery.com/jquery-1.4.3.js"></script></head>
+<body>
+
+<label> Stream</label>
+<input id="url" type="text" value="">
+<p><button id="play" type="button">Play</button><button id="pause" type="button">Pause</button></p>
+<label>Torrent</label>
+<input id="torrent" type="text" value="">
+<p><button id="down" type="button">Download</button> </p>
+<script type="text/javascript" >
+
+$(document).ready(function() {
+   $("#play").click(function() {
+  		$.get("/command.json", { command: "play" , url : $('#url').val() },
+   		function(data){
+     			alert(data);
+   		}, "json");
+   });
+   $("#pause").click(function() {
+    $.get("/command.json", { command: "pause"},
+   		function(data){
+     			alert(data);
+   		}, "json");
+   });
+    $("#down").click(function() {
+    $.get("/torrent.json", { command: "download",  url : $('#url').val()},
+   		function(data){
+     			alert(data);
+   		}, "json");
+   });
+ });
+</script>
+</body>
+</html>

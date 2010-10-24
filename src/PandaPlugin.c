@@ -31,13 +31,19 @@ void panda_plugin_request_handler (PandaPlugin* self, SoupServer* server, SoupMe
 
 
 
+#line 3 "main.vala"
 char* panda_plugin_get_handler_path (PandaPlugin* self) {
+#line 3 "main.vala"
 	return PANDA_PLUGIN_GET_INTERFACE (self)->get_handler_path (self);
+#line 39 "PandaPlugin.c"
 }
 
 
+#line 3 "main.vala"
 void panda_plugin_request_handler (PandaPlugin* self, SoupServer* server, SoupMessage* msg, const char* path, GHashTable* query, SoupClientContext* client) {
+#line 3 "main.vala"
 	PANDA_PLUGIN_GET_INTERFACE (self)->request_handler (self, server, msg, path, query, client);
+#line 47 "PandaPlugin.c"
 }
 
 
