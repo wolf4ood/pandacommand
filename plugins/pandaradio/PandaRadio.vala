@@ -1,12 +1,22 @@
 using Soup;   
 using Gst;
 
-public class PandaRadio : PandaPlugin ,GLib.Object {
+public class PandaRadio : PandaPlugin , GLib.Object {
 
+	protected string SERVICE = "/radio";
 	private PandaPlayer player;
 
+	public string get_dashboard_html(string context){
+		string content ="";
+		try {
+			FileUtils.get_contents(context + "/data/index.html", out content);	
+		}catch (Error err){
+			warning("Error: %s\n", err.message);
+		}
+		return content;
+	}
     public string get_handler_path(){
-        return "/radio.json";
+        return SERVICE;
     }
     public void request_handler(Soup.Server server, Soup.Message msg, string path,
                       GLib.HashTable<string,string>? query, Soup.ClientContext? client){

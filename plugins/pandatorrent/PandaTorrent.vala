@@ -1,13 +1,23 @@
 using Soup;   
 using Json;
-public class PandaTorrent : PandaPlugin ,GLib.Object {
+public class PandaTorrent : PandaPlugin , GLib.Object {
 
+	protected string SERVICE = "/torrent";
 	protected Transmission  transmission ;
 	
-    public string get_handler_path(){
-        return "/torrent.json";
+	public  string get_dashboard_html(string context){
+		string content ="";
+		try {
+			FileUtils.get_contents(context + "/data/index.html", out content);	
+		}catch (Error err){
+			warning("Error: %s\n", err.message);
+		}
+		return content;
+	}
+    public  string get_handler_path(){
+        return SERVICE;
     }
-    public void request_handler(Soup.Server server, Soup.Message msg, string path,
+    public  void request_handler(Soup.Server server, Soup.Message msg, string path,
                       GLib.HashTable<string,string>? query, Soup.ClientContext? client){
 			
 			if(transmission==null) transmission  = new Transmission("192.168.0.2", 9091, null, null);

@@ -1,0 +1,6 @@
+{
+	"name" : "Panda guess",
+	"description" : "Panda plugin for guessing things",
+	"entry" : "pandaguess",	
+	"version" : "0.0.1"
+}

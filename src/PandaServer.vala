@@ -17,46 +17,44 @@ public class PandaServer : GLib.Object {
       
   }
   
-  public void run(){
-    
+  public void run(){   
     server.run();
-  
   }
     protected void default_handler (Soup.Server server, Soup.Message msg, string path,
                       GLib.HashTable? query, Soup.ClientContext client)
     { 
 	    string response_text = "";
-        var file = File.new_for_path ("index.html");
-        if (!file.query_exists (null)) {
-            stderr.printf ("File '%s' doesn't exist.\n", file.get_path ());
-            return ;
+	    if(!plugins.has_key(path) && path !="/") {
+	        resources_handler(server,msg,path,query,client);
+            return;
         }
-
         try {
-            // Open file for reading and wrap returned FileInputStream into a
-            // DataInputStream, so we can read line by line
-            var in_stream = new DataInputStream (file.read (null));
-            string line;
-            // Read lines until end of file (null) is reached
-           while ((line = in_stream.read_line (null, null)) != null) {
-                response_text += line;
-                //stdout.printf ("%s\n", line);
-            }
+           FileUtils.get_contents("data/index.html", out response_text);
         } catch (Error e) {
-            error ("%s", e.message);
+            warning ("%s", e.message);
         }
-
+        string plugins_html="";
+        foreach (PandaPlugin p in plugins.values){
+            string name = p.get_handler_path();
+            plugins_html += "<li>" +  p.get_dashboard_html("plugins/" + "panda" + name[1:name.length]) + "</li>\n";
+        }
+        string real = response_text.replace("<li>@PandaContent</li>",plugins_html);
         msg.set_response ("text/html", Soup.MemoryUse.COPY,
-                          response_text, response_text.size ());
+                          real, real.size ());
         msg.set_status (Soup.KnownStatusCode.OK);
     }
-    protected void plugins_handler(Soup.Server server, Soup.Message msg, string path,
-                      GLib.HashTable<string,string>? query, Soup.ClientContext client){
-          
-                      
-        var plug = plugins.get(path);
-        plug.request_handler(server,msg,path,query,client);
-       
+    protected void resources_handler(Soup.Server server, Soup.Message msg, string path,
+              GLib.HashTable<string,string>? query, Soup.ClientContext client){
+    
+        string content;
+        try {
+            FileUtils.get_contents(path[1:path.length], out content);
+            msg.set_response ("text/html", Soup.MemoryUse.COPY,
+                          content, content.size ());
+            msg.set_status (Soup.KnownStatusCode.OK);
+        } catch (Error err){
+            warning("Error: %s\n", err.message);
+        }
     }
     protected async void load_modules(string path) {
        
@@ -97,7 +95,7 @@ public class PandaServer : GLib.Object {
             var loader = new PandaPluginLoader<PandaPlugin>(module_entry);
             if(loader.load()){
                 PandaPlugin plugin = loader.new_object();
-                this.server.add_handler (plugin.get_handler_path(),plugins_handler);
+                this.server.add_handler (plugin.get_handler_path(),plugin.request_handler);
                 plugins.set(plugin.get_handler_path(),plugin);
             }
         

@@ -1,0 +1,15 @@
+<label>Torrent</label>
+<input id="torrent" type="text" value="">
+<p><button id="down" type="button">Download</button> </p>
+<script type="text/javascript" >
+
+$(document).ready(function() {
+   
+   $("#down").click(function() {
+    $.get("/torrent", { command: "download",  url : $('#url').val()},
+   		function(data){
+     			alert(data);
+   		}, "json");
+   });
+ });
+</script>
