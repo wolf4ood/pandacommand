@@ -1,5 +1,15 @@
-<label> Stream</label>
-<input id="url" type="text" value="">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=620">
+<title>HTML5 Demo: Web Socket</title>
+<link rel="stylesheet" type="text/css" href="data/css/skin.css">
+<script src="http://code.jquery.com/jquery-1.4.3.js"></script>
+</head>
+<body>		
+<label>Stream</label>
+<input id="stream" type="text" value="">
 <p>
 	<button id="play" type="button">Play</button>
 	<button id="pause" type="button">Pause</button>
@@ -9,7 +19,7 @@
 $(document).ready(function() {
    
    $("#play").click(function() {
-  		$.get("/radio", { command: "play" , url : $('#url').val() },
+  		$.get("/radio", { command: "play" , url : $('#stream').val() },
    		function(data){
      			alert(data);
    		}, "json");
@@ -22,3 +32,5 @@ $(document).ready(function() {
    });
  });
 </script>
+</body>
+</html>

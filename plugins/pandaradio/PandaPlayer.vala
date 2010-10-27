@@ -14,8 +14,7 @@ public class PandaPlayer :  GLib.Object {
 
         player.set_state(State.NULL);
 
-    }
-
+    }  
     public void open(string stream) {
 
         this.player.uri = stream;

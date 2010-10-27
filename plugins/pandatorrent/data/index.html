@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=620">
+<title>HTML5 Demo: Web Socket</title>
+<link rel="stylesheet" type="text/css" href="data/css/skin.css">
+<script src="http://code.jquery.com/jquery-1.4.3.js"></script>
+
+</head>
+<body>		
 <label>Torrent</label>
 <input id="torrent" type="text" value="">
 <p><button id="down" type="button">Download</button> </p>
@@ -6,10 +17,12 @@
 $(document).ready(function() {
    
    $("#down").click(function() {
-    $.get("/torrent", { command: "download",  url : $('#url').val()},
+    $.get("/torrent", { command: "download",  url : $('#torrent').val()},
    		function(data){
      			alert(data);
    		}, "json");
    });
  });
 </script>
+</body>
+</html>

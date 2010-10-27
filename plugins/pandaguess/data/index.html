@@ -1,24 +1,29 @@
-<label> Stream</label>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=620">
+<title>HTML5 Demo: Web Socket</title>
+<link rel="stylesheet" type="text/css" href="data/css/skin.css">
+<script src="http://code.jquery.com/jquery-1.4.3.js"></script>
+</head>
+<body>		
+<label>URL</label>
 <input id="url" type="text" value="">
 <p>
-	<button id="play" type="button">Play</button>
-	<button id="pause" type="button">Pause</button>
+	<button id="guess" type="button">Play</button>
 </p>
 <script type="text/javascript" >
 
 $(document).ready(function() {
    
-   $("#play").click(function() {
-  		$.get("/radio", { command: "play" , url : $('#url').val() },
-   		function(data){
-     			alert(data);
-   		}, "json");
-   });
-   $("#pause").click(function() {
-    $.get("/radio", { command: "pause"},
+   $("#guess").click(function() {
+  		$.get("/guess", { command: "guess" , what : $('#url').val() },
    		function(data){
      			alert(data);
    		}, "json");
    });
  });
 </script>
+</body>
+</html>
