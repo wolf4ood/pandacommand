@@ -23,6 +23,7 @@ public class PandaPluginLoader<T> : Object {
         module.symbol ("register_plugin", out function);    
         RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
         type = register_plugin (module);
+        
         stdout.printf ("Plugin type: %s\n\n", type.name ());
         module.make_resident ();
         return true;

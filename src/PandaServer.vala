@@ -14,6 +14,7 @@ public class PandaServer : GLib.Object {
     manager.loaded.connect(add_handler);
     manager.unloaded.connect(remove_handler);
     manager.loadM(); 
+    
   }
   
   public void run(){   

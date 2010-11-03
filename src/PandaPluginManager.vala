@@ -6,13 +6,21 @@ public class PandaPluginManager : GLib.Object {
     private Map<string,PandaPlugin> plugins;   
     public signal void loaded(PandaPlugin p);
     public signal void unloaded(PandaPlugin p);
-    public  void PandaPluginManager(){
+    private string _name;
+    
+
+    public PandaPluginManager(){
          this.plugins = new HashMap<string,PandaPlugin> (str_hash, str_equal);
+         
     }
     public Map<string,PandaPlugin> get_plugins(){
         return plugins;
     }
     public void loadM(){
+        
+        foreach( ParamSpec p in this.get_class().list_properties()) {
+            stdout.printf("%s\n",p.get_name());
+        }
         load_modules(Environment.get_variable ("PWD") + "/plugins/");
     }
     public void signal_handler(string path){
