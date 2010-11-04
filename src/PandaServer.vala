@@ -38,8 +38,7 @@ public class PandaServer : GLib.Object {
             plugins_html += "<li><iframe src='"+ name +" 'width='800' height='400'></iframe></li>\n";
         }
         string real = response_text.replace("<li>@PandaContent</li>",plugins_html);
-        msg.set_response ("text/html", Soup.MemoryUse.COPY,
-                          real, real.size ());
+        msg.set_response ("text/html", Soup.MemoryUse.COPY,real.data);
         msg.set_status (Soup.KnownStatusCode.OK);
     }
     protected void resources_handler(Soup.Server server, Soup.Message msg, string path,
@@ -48,8 +47,7 @@ public class PandaServer : GLib.Object {
         string content;
         try {
             FileUtils.get_contents(path[1:path.length], out content);
-            msg.set_response ("text/html", Soup.MemoryUse.COPY,
-                          content, content.size ());
+            msg.set_response ("text/html", Soup.MemoryUse.COPY, content.data);
             msg.set_status (Soup.KnownStatusCode.OK);
         } catch (Error err){
             warning("Error: %s\n", err.message);
