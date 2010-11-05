@@ -69,7 +69,6 @@ public class PandaPluginManager : GLib.Object {
             var loader = new PandaPluginLoader<PandaPlugin>(module_entry);
             if(loader.load()){
                 PandaPlugin plugin = loader.new_object();
-                stdout.printf ("Plugin type: %s\n\n",plugin.get_type().name());
                 if(this.plugins==null){
                   this.plugins = new HashMap<string,PandaPlugin>(str_hash, str_equal);
                 }

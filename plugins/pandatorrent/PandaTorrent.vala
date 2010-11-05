@@ -4,8 +4,12 @@ using Gee;
 
 public class PandaTorrent : PandaPlugin , GLib.Object {
 
-	protected string SERVICE = "/torrent";
+	protected string SERVICE = "/pandatorrent";
 	protected Transmission  transmission ;
+	
+	public void init(){
+	
+	}
 	public  string get_dashboard_html(string context){
 		string content ="";
 		try {
@@ -18,21 +22,11 @@ public class PandaTorrent : PandaPlugin , GLib.Object {
     public  string get_handler_path(){
         return SERVICE;
     }
-    public  void request_handler(Soup.Server server, Soup.Message msg, string path,
-                      GLib.HashTable<string,string>? query, Soup.ClientContext? client){
-			
-			string response ="";
-			if(query!=null){
-				if(transmission==null) transmission  = new Transmission("192.168.0.2", 9091, null, null);
-				response = transmission.request_list();
-				
-			}else {
-				response = get_dashboard_html("/home/maggiolo00/Vala/pandacommand/plugins/pandatorrent");
-			}
-			msg.set_response ("text/html", Soup.MemoryUse.COPY,
-		                  response , response.size ());
-		    msg.set_status (Soup.KnownStatusCode.OK);
+     public string invoke(string cmd,Gee.List<string> args){
+    	
+    	return "bad";
     }
+
 }
 
 public Type register_plugin (Module module) {

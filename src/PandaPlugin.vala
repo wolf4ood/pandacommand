@@ -1,4 +1,3 @@
-using Soup;
 using Gee;
 public interface PandaPlugin : GLib.Object {
 
