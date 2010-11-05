@@ -3,28 +3,34 @@ using Gee;
 
 public class PandaPluginManager : GLib.Object {
 
-    private Map<string,PandaPlugin> plugins;   
+    private Map<string,PandaPluginAction> plugins;   
     public signal void loaded(PandaPlugin p);
     public signal void unloaded(PandaPlugin p);
     private string _name;
-    
-
     public PandaPluginManager(){
          this.plugins = new HashMap<string,PandaPlugin> (str_hash, str_equal);
          
     }
-    public Map<string,PandaPlugin> get_plugins(){
+    public Map<string,PandaPluginAction> get_plugins(){
         return plugins;
     }
     public void loadM(){
         
-        foreach( ParamSpec p in this.get_class().list_properties()) {
-            stdout.printf("%s\n",p.get_name());
-        }
+        PandaConnect front = new PandaConnect(this);
+        front.register.connect(register_cmd);
+        front.unregister.connect(unregister_cmd);
+        this.plugins.set(front.get_handler_path(),new PandaPluginAction(front));
+        loaded(front);  
         load_modules(Environment.get_variable ("PWD") + "/plugins/");
+        
     }
-    public void signal_handler(string path){
-         stdout.printf ("Path: %s\n\n",path);
+    public void register_cmd(PandaPlugin plug,string cmd,Gee.List<string> args){
+        PandaPluginAction p_action = plugins.get(plug.get_handler_path());
+        p_action.add_command(cmd,args);
+    }
+    public void unregister_cmd (PandaPlugin plug,string cmd){
+        PandaPluginAction p_action = plugins.get(plug.get_handler_path());
+        p_action.remove_command(cmd);
     }
     protected async void load_modules(string path) {
        
@@ -67,10 +73,10 @@ public class PandaPluginManager : GLib.Object {
                 if(this.plugins==null){
                   this.plugins = new HashMap<string,PandaPlugin>(str_hash, str_equal);
                 }
-                this.plugins.set(plugin.get_handler_path(),plugin);
-                plugin.register.connect(signal_handler);
-                loaded(plugin);
-              
+                plugin.register.connect(register_cmd);
+                plugin.unregister.connect(unregister_cmd);
+                this.plugins.set(plugin.get_handler_path(),new PandaPluginAction(plugin));
+                loaded(plugin);              
             }
         
         } catch (Error err) {

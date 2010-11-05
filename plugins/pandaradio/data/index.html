@@ -19,13 +19,13 @@
 $(document).ready(function() {
    
    $("#play").click(function() {
-  		$.get("/radio", { command: "play" , url : $('#stream').val() },
+  		$.get("/pandaradio", { command: "play" , url : $('#stream').val() },
    		function(data){
      			alert(data);
    		}, "json");
    });
    $("#pause").click(function() {
-    $.get("/radio", { command: "pause"},
+    $.get("/pandaradio", { command: "pause"},
    		function(data){
      			alert(data);
    		}, "json");

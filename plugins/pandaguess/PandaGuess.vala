@@ -3,25 +3,20 @@ using Gee;
 
 public class PandaGuess : PandaPlugin , GLib.Object  {
 	
-	 protected string SERVICE = "/guess";
- 	
- 	 public void init(){
- 	 	register("/radio",guess_what);
- 	 }
-	 public void request_handler(Soup.Server server, Soup.Message msg, string path,
-                      GLib.HashTable<string,string>? query, Soup.ClientContext? client){
-     		
-     	string response ="";
-     	if(query!=null){
-     		
-     	}else {
-     		response = get_dashboard_html("/home/maggiolo00/Vala/pandacommand/plugins/pandaguess");
-     	}	
-     }
+	 protected string SERVICE = "/pandaguess";
+ 		
      public string get_handler_path(){
         return SERVICE;
     }
-    public void guess_what(){
+    public string invoke(string cmd,Gee.List<string> args){
+    	return "Ok";
+    }
+    public void init() {
+		Gee.List<string> args = new Gee.ArrayList<string>();
+		args.add("Url of the stream");
+		register("guess_what",args);
+	}
+    public void guess_what(string guess){
     
     }
     public string get_dashboard_html(string context){

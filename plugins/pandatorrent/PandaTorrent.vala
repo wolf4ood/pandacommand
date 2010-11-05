@@ -6,9 +6,6 @@ public class PandaTorrent : PandaPlugin , GLib.Object {
 
 	protected string SERVICE = "/torrent";
 	protected Transmission  transmission ;
-	public void init(){
- 	 
- 	}
 	public  string get_dashboard_html(string context){
 		string content ="";
 		try {

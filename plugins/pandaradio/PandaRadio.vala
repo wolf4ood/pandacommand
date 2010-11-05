@@ -4,14 +4,22 @@ using Gee;
 
 public class PandaRadio : PandaPlugin , GLib.Object {
 
-	protected string SERVICE = "/radio";
+	protected string SERVICE = "/pandaradio";
 	private PandaPlayer player;
-
-	public void init(){
- 	 
- 	}
+	
 	public signal void radio_on();	
 	public signal void radio_off();
+	public signal void radio_pause();
+	
+	public void init() {
+		Gee.List<string> args = new Gee.ArrayList<string>();
+		args.add("Url of the stream");
+		register("play",args);
+		args.clear();
+		register("pause",args);
+		register("stop",args);
+		player = new PandaPlayer();
+	}
 	public string get_dashboard_html(string context){
 		string content ="";
 		try {
@@ -24,40 +32,37 @@ public class PandaRadio : PandaPlugin , GLib.Object {
     public string get_handler_path(){
         return SERVICE;
     }
+    public string invoke(string cmd,Gee.List<string> args){
+    	if(cmd=="play"){
+			stdout.printf("%s\n",args[0]);    		
+			play(args[0]);
+    		return "playing";
+    	}
+    	if(cmd=="pause"){
+    		pause();
+    		return "paused";
+    	}
+    	if(cmd=="stop"){
+    		stop();
+    		return "stopped";
+    	}
+    	return "bad";
+    }
     public void play(string url){
+    	
     	if(url!=null){ 
 			player.open(url);
 			player.play();
 			radio_on();
 		}
     }
-    public void stop(){
-    	
+    public void pause(){
+    	player.pause();
+	 	radio_pause();
     }
-    public void request_handler(Soup.Server server, Soup.Message msg, string path,
-                      GLib.HashTable<string,string>? query, Soup.ClientContext? client){
-						 	
-		string response ="";
-		string company = "";
-		if(query!=null){
-			if(player==null) player = new PandaPlayer();
-			response = msg.request_body.flatten().data;
-		 	company  = query.lookup("command");
-	 		if(company == "play") {
-				string url = query.lookup("url");
-				stdout.printf("%s\n",url);
-			  	play(url);
-	 		}else {
-	 			  player.pause();
-	 			  radio_off();
-	 		}
- 		}else {
- 			response = get_dashboard_html("/home/maggiolo00/Vala/pandacommand/plugins/pandaradio");
- 		}
-	 	msg.set_response ("text/html", Soup.MemoryUse.COPY,
-                      response + company , response.size () + company.size());
-        msg.set_status (Soup.KnownStatusCode.OK);
-    
+    public void stop(){
+    	player.stop();
+	 	radio_off();
     }
 }
 public Type register_plugin (Module module) {
