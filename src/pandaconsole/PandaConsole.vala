@@ -3,8 +3,12 @@ using Soup;
 public class PandaConsole : PandaPlugin , GLib.Object {
 
 	protected string SERVICE = "/pandaconsole";
+	protected PandaPluginManager manager;
 	public signal void word_ok();	
-	
+    
+    public PandaConsole(PandaPluginManager manager){
+        this.manager = manager;
+    }
 	public void init() {
 		Gee.List<string> args = new Gee.ArrayList<string>();
 		args.add("String to play");
@@ -13,7 +17,7 @@ public class PandaConsole : PandaPlugin , GLib.Object {
 	public string get_dashboard_html(string context){
 		string content ="";
 		try {
-			FileUtils.get_contents(context + "/data/index.html", out content);	
+			FileUtils.get_contents("data/pandaconsole/index.html", out content);	
 		}catch (Error err){
 			warning("Error: %s\n", err.message);
 		}
@@ -24,16 +28,27 @@ public class PandaConsole : PandaPlugin , GLib.Object {
     }
     public string invoke(string cmd,Gee.List<string> args){
     	if(cmd=="parse"){    		
-			parse(args[0]);
-    		return "command ok";
+			return parse(args[0]);
+    		
     	}
     	return "command bad";
     }
-    public void parse(string command){
+    public string parse(string command){
     	
-    	if(command!=null){  p
+    	if(command!=null){ 
+
 			string[] args = command.split(" ");
+			string plug = args[0];
+			Gee.List<string> list = new Gee.ArrayList<string>();
+			
+			foreach(string s in args) {
+			    if(plug!=s) list.add(s);
+			}
+			string cmd = list.remove_at(0);
+			PandaPluginAction action = manager.get_plugins().get(plug);
+			return action.invoke(cmd,list);
 		}
+		return "missing params";
     }
 
 }

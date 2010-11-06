@@ -19,8 +19,13 @@ public class PandaPluginManager : GLib.Object {
         PandaConnect front = new PandaConnect(this);
         front.register.connect(register_cmd);
         front.unregister.connect(unregister_cmd);
+        PandaConsole console = new PandaConsole(this);
+        console.register.connect(register_cmd);
+        console.unregister.connect(unregister_cmd);
         this.plugins.set(front.get_handler_path(),new PandaPluginAction(front));
-        loaded(front);  
+        loaded(front);
+        this.plugins.set(console.get_handler_path(),new PandaPluginAction(console));
+        loaded(console);    
         load_modules(Environment.get_variable ("PWD") + "/plugins/");
         
     }

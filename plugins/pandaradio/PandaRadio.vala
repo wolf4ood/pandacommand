@@ -33,6 +33,7 @@ public class PandaRadio : PandaPlugin , GLib.Object {
         return SERVICE;
     }
     public string invoke(string cmd,Gee.List<string> args){
+    	stdout.printf("gianni\n");
     	if(cmd=="play"){
 			stdout.printf("%s\n",args[0]);    		
 			play(args[0]);

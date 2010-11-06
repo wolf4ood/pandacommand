@@ -1,0 +1,6 @@
+{
+	"name" : "Panda console",
+	"description" : "Console for Panda",
+	"entry" : "pandaconsole",	
+	"version" : "0.0.1"
+}

@@ -1,0 +1,6 @@
+{
+	"name" : "Panda speak",
+	"description" : "Panda plugin for espeak",
+	"entry" : "pandaspeak",	
+	"version" : "0.0.1"
+}

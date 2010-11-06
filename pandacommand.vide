@@ -20,20 +20,21 @@ executable-options:
   working-dir: /home/maggiolo00/Vala/pandacommand/
   environment: []
 files:
-- path: src/PandaPluginManager.vala
-- path: src/PandaConfig.vala
-- path: src/PandaServer.vala
-- path: src/PandaConnect.vala
-- path: src/main.vala
-- path: COPYING
-- path: src/PandaPlugin.vala
-- path: src/PandaPluginLoader.vala
 - path: src/PandaPluginAction.vala
+- path: src/PandaPluginLoader.vala
+- path: src/PandaPlugin.vala
+- path: COPYING
+- path: src/main.vala
+- path: src/PandaConnect.vala
+- path: src/PandaServer.vala
+- path: src/PandaConfig.vala
+- path: src/PandaPluginManager.vala
+- path: src/pandaconsole/PandaConsole.vala
 packages:
-- name: gstreamer-0.10
-- name: libsoup-2.4
-- name: xmms2-client
-- name: gee-1.0
 - name: json-glib-1.0
+- name: gee-1.0
+- name: xmms2-client
+- name: libsoup-2.4
+- name: gstreamer-0.10
 vapi_dir:
 - path: /home/maggiolo00/Vala/pandacommand/vapi
