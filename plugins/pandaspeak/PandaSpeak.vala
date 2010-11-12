@@ -36,7 +36,11 @@ public class PandaSpeak : PandaPlugin , GLib.Object {
     	if(url!=null){ 
 			 string[] runme = { "/usr/bin/espeak", url };
 			try  {
-			if (!Process.spawn_sync (null, runme, null, SpawnFlags.STDERR_TO_DEV_NULL, null)) return;			
+				if (!Process.spawn_sync (null, runme, null, SpawnFlags.STDERR_TO_DEV_NULL, null)) {
+					return;	
+				}else {
+					word_ok();
+				}			
 			} catch (SpawnError err) {
 				warning("Error: %s\n", err.message);
 			}	        	

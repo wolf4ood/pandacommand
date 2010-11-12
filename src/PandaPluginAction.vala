@@ -23,5 +23,8 @@ public class PandaPluginAction : GLib.Object {
         stdout.printf("%s\n",args[0]);   
         return "command not found";
     }
+    public bool has_action(string cmd) {
+        return actions.has_key(cmd);
+    }
     
 }

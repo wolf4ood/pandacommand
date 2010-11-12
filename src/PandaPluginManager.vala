@@ -6,9 +6,8 @@ public class PandaPluginManager : GLib.Object {
     private Map<string,PandaPluginAction> plugins;   
     public signal void loaded(PandaPlugin p);
     public signal void unloaded(PandaPlugin p);
-    private string _name;
     public PandaPluginManager(){
-         this.plugins = new HashMap<string,PandaPlugin> (str_hash, str_equal);
+         this.plugins = new HashMap<string,PandaPluginAction> (str_hash, str_equal);
          
     }
     public Map<string,PandaPluginAction> get_plugins(){
@@ -29,6 +28,10 @@ public class PandaPluginManager : GLib.Object {
         load_modules(Environment.get_variable ("PWD") + "/plugins/");
         
     }
+    public bool has_action(string plug,string cmd){
+        if(!plugins.has_key(plug)) return false;
+        return plugins.get(plug).has_action(cmd);
+    }
     public void register_cmd(PandaPlugin plug,string cmd,Gee.List<string> args){
         PandaPluginAction p_action = plugins.get(plug.get_handler_path());
         p_action.add_command(cmd,args);
@@ -36,6 +39,9 @@ public class PandaPluginManager : GLib.Object {
     public void unregister_cmd (PandaPlugin plug,string cmd){
         PandaPluginAction p_action = plugins.get(plug.get_handler_path());
         p_action.remove_command(cmd);
+    }
+    public void invoke(string plugin,string cmd , Gee.List<string> args) {
+        plugins.get(plugin).invoke(cmd,args);
     }
     protected async void load_modules(string path) {
        

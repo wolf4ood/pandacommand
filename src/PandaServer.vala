@@ -28,8 +28,8 @@ public class PandaServer : GLib.Object {
 	        if(!manager.get_plugins().has_key(path)){
 	            resources_handler(server,msg,path,query,client);
                 return;
-            }else {
-                proxy_request(server,msg,path,query);
+            }else {  
+                proxy_request(msg,path,query);
                 return;
             }
         }
@@ -66,7 +66,7 @@ public class PandaServer : GLib.Object {
     public void remove_handler(PandaPlugin plugin){
         this.server.remove_handler(plugin.get_handler_path());
     }
-    protected async void proxy_request(Soup.Server server, Soup.Message msg, string path,
+    protected async void proxy_request(Soup.Message msg, string path,
                       GLib.HashTable<string,string>? query){
     
         string response ="";
