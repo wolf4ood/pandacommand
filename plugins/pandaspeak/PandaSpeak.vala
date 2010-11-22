@@ -21,6 +21,9 @@ public class PandaSpeak : PandaPlugin , GLib.Object {
 		}
 		return content;
 	}
+	public string invoke_command(string cmd, ...){
+        return "ok";
+    }
     public string get_handler_path(){
         return SERVICE;
     }

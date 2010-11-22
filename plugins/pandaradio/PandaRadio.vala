@@ -15,11 +15,13 @@ public class PandaRadio : PandaPlugin , GLib.Object {
 		Gee.List<string> args = new Gee.ArrayList<string>();
 		args.add("Url of the stream");
 		register("play",args);
-		args.clear();
-		register("pause",args);
-		register("stop",args);
+		register("pause",null);
+		register("stop",null);
 		player = new PandaPlayer();
 	}
+	public string invoke_command(string cmd, ...){
+        return "ok";
+    }
 	public string get_dashboard_html(string context){
 		string content ="";
 		try {
@@ -66,7 +68,7 @@ public class PandaRadio : PandaPlugin , GLib.Object {
     }
 }
 public Type register_plugin (Module module) {
-    return typeof (PandaRadio);
+	return typeof (PandaRadio);
 }
 
 

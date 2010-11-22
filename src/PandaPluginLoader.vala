@@ -8,9 +8,9 @@ public class PandaPluginLoader<T> : Object {
 
     private delegate Type RegisterPluginFunction (Module module);
 
-    public PandaPluginLoader (string name) {
+    public PandaPluginLoader (string pathP,string name) {
         assert (Module.supported ());
-        this.path = Module.build_path (Environment.get_variable ("PWD") + "/plugins/" + name , name);
+        this.path = Module.build_path (Environment.get_variable ("PWD") + "/" + pathP +"/" + name , name);
     }
     public bool load () {
         stdout.printf ("Loading plugin with path: '%s'\n", path);

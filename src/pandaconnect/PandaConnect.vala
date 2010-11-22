@@ -2,6 +2,8 @@ using Soup;
 using Gee;
 
 
+
+
 public class PandaConnect : PandaPlugin,GLib.Object{
 
 
@@ -19,17 +21,33 @@ public class PandaConnect : PandaPlugin,GLib.Object{
         Gee.List<string> args = new Gee.ArrayList<string>();
         register("connect",args);
         register("disconnect",args);
-        register("list",args);
+        register("list",null);
+    }
+    public string invoke_command(string cmd, ...){
+    
+        return "ok";
+    }
+    public void init_connect(){
+        Gee.List<Type> args = new Gee.ArrayList<Type>();
+        args.add(typeof(string));
+        args.add(typeof(string));
+        args.add(typeof(string));
+        args.add(typeof(string)); 
+        args.add(typeof(Gee.List<string>));   
     }
     public string invoke(string cmd,Gee.List<string> args){
         string ret="";
         if(cmd=="connect"){
             if(args.size < 4) return "not valid arguments";
-            Gee.List<string> slice = args.slice(3,args.size);
+            Gee.List<string> slice = args.slice(4,args.size);
             ret = connect_to(args.get(0),args.get(1),args.get(2),args.get(3),slice);
         }
         if(cmd=="list"){
             ret = list_connection();
+        }
+        if(cmd=="disconnect") {
+             if(args.size < 4) return "not valid arguments";
+            ret = disconnect_from(args.get(0),args.get(1),args.get(2),args.get(3));
         }
         return ret;
     }
@@ -50,23 +68,18 @@ public class PandaConnect : PandaPlugin,GLib.Object{
             PandaSignal sig_manager = new PandaSignal(i);
             sig_manager.panda_invoke.connect(invoke_handler);
             signals_manager.get(p.get_handler_path()).add(sig_manager); 
-            GLib.Signal.connect_object(p,name,(Callback)sig_manager.proxy_signal,sig_manager,0);
-        }
-        foreach(string key in signals_manager.keys){
-            foreach(PandaSignal s in signals_manager.get(key)){
-                stdout.printf("%d - %d\n",(int)s.id,(int)s);
-            }
+            GLib.Signal.connect_object(p,name,(Callback)proxy_signal,sig_manager,0);
         }
     }
     
     public void invoke_handler(string plugin,string cmd,Gee.List<string> args){
-        stdout.printf("fewfewfwe\n");
-        foreach(string key in signals_manager.keys){
-            foreach(PandaSignal s in signals_manager.get(key)){
-                stdout.printf("%d - %d\n",(int)s.id,(int)s);
+         string input_args = "";
+            foreach(string s in args){
+                if(s!="command"){
+                    input_args += s + " ";
+                }
             }
-        }
-        //manager.invoke(plugin,cmd,args);
+        manager.invoke(plugin + cmd + input_args);
     }
     public void on_plugin_unloaded(PandaPlugin p){
         
@@ -102,4 +115,18 @@ public class PandaConnect : PandaPlugin,GLib.Object{
             }
             return "connection established";
     }
+    protected string disconnect_from(string source,string sign,string target, string cmd) {
+          
+          if(!has_signal(source,sign)) return "Source signal not found";
+          foreach (PandaSignal s in signals_manager.get(source)){
+                string name = GLib.Signal.name(s.id);
+                if(sign==name){
+                    s.remove_callback(target,cmd);
+                }
+           }
+           return "disconnected";
+    }
+}
+public void proxy_signal(PandaPlugin p,PandaSignal s){
+    s.proxy_signal();
 }
