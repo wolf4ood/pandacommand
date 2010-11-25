@@ -3,14 +3,15 @@ using Gee;
 
 public class PandaSpeak : PandaPlugin , GLib.Object {
 
-	protected string SERVICE = "/pandaspeak";
+	protected string SERVICE = "pandaspeak";
 	
 	public signal void word_ok();	
 	
 	public void init() {
 		Gee.List<string> args = new Gee.ArrayList<string>();
-		args.add("String to play");
+		args.add("string to speak");
 		register("play",args);
+		
 	}
 	public string get_dashboard_html(string context){
 		string content ="";
@@ -21,16 +22,16 @@ public class PandaSpeak : PandaPlugin , GLib.Object {
 		}
 		return content;
 	}
-	public string invoke_command(string cmd, ...){
-        return "ok";
-    }
     public string get_handler_path(){
         return SERVICE;
+    }
+    public string invoke_rpc(string json){
+        return "ok";
     }
     public string invoke(string cmd,Gee.List<string> args){
     	if(cmd=="play"){    		
 			play(args[0]);
-    		return "playing";
+    		return "played";
     	}
     	return "bad";
     }

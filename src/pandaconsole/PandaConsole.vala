@@ -2,7 +2,7 @@ using Gee;
 using Soup;
 public class PandaConsole : PandaPlugin , GLib.Object  {
 
-	protected string SERVICE = "/pandaconsole";
+	protected string SERVICE = "pandaconsole";
 	protected PandaPluginManager manager;
 	public signal void word_ok();	
     
@@ -26,12 +26,12 @@ public class PandaConsole : PandaPlugin , GLib.Object  {
     public string get_handler_path(){
         return SERVICE;
     }
-    public string invoke_command(string cmd, ...){
+    public string invoke_rpc(string json){
         return "ok";
     }
     public string invoke(string cmd,Gee.List<string> args){
     	if(cmd=="parse"){    		
-			return parse(args[0]);
+			return parse_args(args[0]);
     		
     	}
     	return "command bad";
@@ -39,7 +39,21 @@ public class PandaConsole : PandaPlugin , GLib.Object  {
     public string parse(string command){
     	return manager.invoke(command);
     }
+    public string parse_args(string command){
+        if(command!=null){
 
+            string[] args = command.split(" ");
+            string plug = args[0];
+            Gee.List<string> list = new Gee.ArrayList<string>();
+
+            foreach(string s in args) {
+                if(plug!=s) list.add(s);
+            }
+            string cmd = list.remove_at(0);
+            return manager.invoke_cmd(plug,cmd,list);
+        }
+            return "missing params";
+    }
 }
 public Type register_plugin (Module module) {
     return typeof (PandaConsole);

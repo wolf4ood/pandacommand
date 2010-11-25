@@ -9,7 +9,7 @@ public class PandaConnect : PandaPlugin,GLib.Object{
 
     protected Map<string,Gee.List<PandaSignal>> signals_manager;
     protected PandaPluginManager manager;
-    public static string SERVICE = "/pandamanager";
+    public static string SERVICE = "pandamanager";
     
     public PandaConnect(PandaPluginManager manager) {
         this.manager = manager;
@@ -21,19 +21,9 @@ public class PandaConnect : PandaPlugin,GLib.Object{
         Gee.List<string> args = new Gee.ArrayList<string>();
         register("connect",args);
         register("disconnect",args);
-        register("list",null);
-    }
-    public string invoke_command(string cmd, ...){
-    
-        return "ok";
-    }
-    public void init_connect(){
-        Gee.List<Type> args = new Gee.ArrayList<Type>();
-        args.add(typeof(string));
-        args.add(typeof(string));
-        args.add(typeof(string));
-        args.add(typeof(string)); 
-        args.add(typeof(Gee.List<string>));   
+        register("connection",null);
+        register("rpcs",null);
+        register("hosts",null);
     }
     public string invoke(string cmd,Gee.List<string> args){
         string ret="";
@@ -42,14 +32,20 @@ public class PandaConnect : PandaPlugin,GLib.Object{
             Gee.List<string> slice = args.slice(4,args.size);
             ret = connect_to(args.get(0),args.get(1),args.get(2),args.get(3),slice);
         }
-        if(cmd=="list"){
+        if(cmd=="connection"){
             ret = list_connection();
+        }
+         if(cmd=="rpcs"){
+            ret = list_rpcs();
         }
         if(cmd=="disconnect") {
              if(args.size < 4) return "not valid arguments";
             ret = disconnect_from(args.get(0),args.get(1),args.get(2),args.get(3));
         }
         return ret;
+    }
+    public string invoke_rpc(string json){
+        return "ok";
     }
     public string get_dashboard_html(string context){
         return "ok";
@@ -72,14 +68,18 @@ public class PandaConnect : PandaPlugin,GLib.Object{
         }
     }
     
-    public void invoke_handler(string plugin,string cmd,Gee.List<string> args){
+    public void invoke_handler(string plugin,string host,string cmd,Gee.List<string> args){
          string input_args = "";
             foreach(string s in args){
                 if(s!="command"){
-                    input_args += s + " ";
+                    input_args += s + "";
                 }
-            }
-        manager.invoke(plugin + cmd + input_args);
+         }
+         if(host!=null && host != "") {
+         
+         } else {
+            string sig = manager.invoke(plugin + " " + cmd + " " + input_args);
+        }
     }
     public void on_plugin_unloaded(PandaPlugin p){
         
@@ -94,26 +94,41 @@ public class PandaConnect : PandaPlugin,GLib.Object{
         }
         return ret;
     }
+    protected string list_rpcs(){
+        return manager.list_rpcs();
+    }
     protected  bool has_signal(string source,string sign){
-         foreach (PandaSignal s in signals_manager.get(source)){
-                string name = GLib.Signal.name(s.id);
-                if(sign==name){
-                    return true;
+         if(signals_manager.has_key(source)){
+            foreach (PandaSignal s in signals_manager.get(source)){
+                   string name = GLib.Signal.name(s.id);
+                   if(sign==name){
+                       return true;
                 }
+            }
          }
          return false;
     }
     protected string connect_to(string source,string sign ,string target,string cmd,Gee.List<string> args){
             
             if(!has_signal(source,sign)) return "Source signal not found";
-            if(!manager.has_action(target,cmd)) return "Target command not found";
+            string host = "";
+            string dest = "" ;
+            host = target.chr(-1,'@');
+            if(host==null) {
+                host ="";
+            }
+            host = target.replace(host,"");
+            dest = target.replace(host + "@","");
+            if(!manager.has_action(dest,cmd)) return "Target command not found";
             foreach (PandaSignal s in signals_manager.get(source)){
                 string name = GLib.Signal.name(s.id);
                 if(sign==name){
-                    s.add_callback(target,cmd,args);
+                    s.add_callback(dest,host,cmd,args);
                 }
+              
             }
             return "connection established";
+
     }
     protected string disconnect_from(string source,string sign,string target, string cmd) {
           

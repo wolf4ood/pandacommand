@@ -1,18 +1,20 @@
 using Gee;
-
+using Json;
 
 public class PandaPluginManager : GLib.Object {
 
-    public Map<string,PandaPluginAction> plugins {get; set;}   
+    public Map<string,PandaPluginAction> plugins {get; set;}
+    public Map<string,string> hosts    {get; set;}
     public signal void loaded(PandaPlugin p);
     public signal void unloaded(PandaPlugin p);
     public PandaPluginManager(){
-         this.plugins = new HashMap<string,PandaPluginAction> (str_hash, str_equal);        
+         this.plugins = new HashMap<string,PandaPluginAction> (str_hash, str_equal); 
+         this.hosts = new HashMap<string,string>();       
     }
     
     public void loadM(){
         
-        
+          
         PandaConnect front = new PandaConnect(this);
         front.register.connect(register_cmd);
         front.unregister.connect(unregister_cmd);
@@ -53,9 +55,27 @@ public class PandaPluginManager : GLib.Object {
         if(!has_plugin(plug)) return "Command not found";
         return plugins.get(plug).list_actions();
     }
+    public string list_rpcs(){
+        string list = "";
+        foreach(string s in plugins.keys)
+        {
+            list += s.replace("/","") + "\n";
+            list += list_rpc(s);
+        }
+        return list;
+    }
+    public string list_rpc(string plug){
+        if(!has_plugin(plug)) return "Command not found";
+        return plugins.get(plug).list_rpcs();
+    }
     public void register_cmd(PandaPlugin plug,string cmd,Gee.List<string>? args){
         PandaPluginAction p_action = plugins.get(plug.get_handler_path());
         p_action.add_command(cmd,args);
+    }
+    public void register_rpc(PandaPlugin plug,string rpc){
+        PandaPluginAction p_action = plugins.get(plug.get_handler_path());
+        p_action.add_rpc(rpc);
+
     }
     public void unregister_cmd (PandaPlugin plug,string cmd){
         PandaPluginAction p_action = plugins.get(plug.get_handler_path());
@@ -65,11 +85,12 @@ public class PandaPluginManager : GLib.Object {
         
         if(command!=null && command!=""){
         	string[] args = command.split(" ");
-			string plug = "/" + args[0];
+			string plug = args[0];
 			if(args.length ==1)  return list_actions(plug);
 			Gee.List<string> list = new Gee.ArrayList<string>();
 			foreach(string s in args) {
 			    if(args[0]!=s) list.add(s);
+			    stdout.printf("g - %s\n",s);
 			}
 			string cmd = list.remove_at(0);
 			string err = "";
@@ -80,10 +101,31 @@ public class PandaPluginManager : GLib.Object {
     }
 
     public string invoke_cmd(string plugin,string cmd ,Gee.List<string> args) {
+        if(!has_action(plugin,cmd)) return "Command not found\n";
         return plugins.get(plugin).invoke(cmd,args);
     }
+    public string invoke_rpc(string json_rpc){
+        string ret = "";
+        try {
+            var parser = new Json.Parser();
+            parser.load_from_data(json_rpc,-1);
+            var object = parser.get_root().get_object();
+            string plugin = object.get_string_member("plugin");
+            string method = object.get_string_member("method");
+            var arguments = object.get_array_member("params").get_elements();
+            Gee.List<string> args = new Gee.ArrayList<string>();
+            foreach(unowned Json.Node n in arguments){
+                args.add(n.get_string());
+            }
+            ret = invoke_cmd(plugin,method,args);
+        }catch (Error e){
+            ret = e.message;
+            error("%s", e.message);
+        } 
+        return ret;
+    }
     public string get_plugin_control_panel(string path){
-        string context = Environment.get_variable ("PWD") + "/plugins" + path;
+        string context = Environment.get_variable ("PWD") + "/plugins/" + path;
         if(plugins.has_key(path)){
             return plugins.get(path).plugin.get_dashboard_html(context);
         }else {
@@ -133,6 +175,7 @@ public class PandaPluginManager : GLib.Object {
                   this.plugins = new HashMap<string,PandaPlugin>(str_hash, str_equal);
                 }
                 plugin.register.connect(register_cmd);
+                plugin.register_rpc.connect(register_rpc);
                 plugin.unregister.connect(unregister_cmd);
                 this.plugins.set(plugin.get_handler_path(),new PandaPluginAction(plugin));
                 loaded(plugin);              

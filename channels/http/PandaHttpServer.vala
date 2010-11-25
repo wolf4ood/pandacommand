@@ -6,11 +6,9 @@ using Gee;
 public class PandaHttpServer : PandaAbstractServer {
 
   private Soup.Server server;
-  //private PandaPluginManager manager;
   public PandaHttpServer(int port){    
     this.server = new Soup.Server(Soup.SERVER_PORT, port);
     this.server.add_handler ("/", default_handler);
-    //manager = new PandaPluginManager();
   }
   public override void init(){
     manager.loaded.connect(add_handler);
@@ -25,7 +23,7 @@ public class PandaHttpServer : PandaAbstractServer {
     { 
 	    string response_text = "";
 	    if(path !="/") {
-	        if(!manager.has_plugin(path)){
+	        if(!manager.has_plugin(path.replace("/",""))){
 	            resources_handler(server,msg,path,query,client);
                 return;
             }else {  
@@ -73,16 +71,16 @@ public class PandaHttpServer : PandaAbstractServer {
         string response ="";
         if(query!=null){ 
             GLib.List<string> keys = query.get_keys();
-            string args = "";
+            Gee.List<string> args = new Gee.ArrayList<string>();
             foreach(string s in keys){
                 if(s!="command"){
-                    args += s + " ";
+                    args.add(query.lookup(s));
                 }
             }
             string command = query.lookup("command");
-            response = invoke(path + command + args);
+            response = invoke_cmd(path.replace("/",""),command,args);
         }else {
-            response = manager.get_plugin_control_panel(path); 
+            response = manager.get_plugin_control_panel(path.replace("/","")); 
         }
         msg.set_response ("text/html", Soup.MemoryUse.COPY,
                       response, response.size ());

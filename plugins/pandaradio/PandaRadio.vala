@@ -4,7 +4,7 @@ using Gee;
 
 public class PandaRadio : PandaPlugin , GLib.Object {
 
-	protected string SERVICE = "/pandaradio";
+	protected string SERVICE = "	pandaradio";
 	private PandaPlayer player;
 	
 	public signal void radio_on();	
@@ -17,9 +17,11 @@ public class PandaRadio : PandaPlugin , GLib.Object {
 		register("play",args);
 		register("pause",null);
 		register("stop",null);
+		string rpc = "{ 'method' : 'play', 'params' : ['url']}";
+		register_rpc(rpc);
 		player = new PandaPlayer();
 	}
-	public string invoke_command(string cmd, ...){
+   	public string invoke_rpc(string json){
         return "ok";
     }
 	public string get_dashboard_html(string context){

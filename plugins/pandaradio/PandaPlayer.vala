@@ -11,7 +11,6 @@ public class PandaPlayer :  GLib.Object {
 
         Gst.Bus bus = this.player.get_bus();
         bus.add_watch(bus_callback);
-
         player.set_state(State.NULL);
 
     }  

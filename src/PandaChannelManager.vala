@@ -3,10 +3,11 @@
 public class PandaChannelManager : GLib.Object{
 
     private PandaPluginManager manager ;
+    
     private PandaHttpServer httpServer ;
     private PandaSocketServer socketServer;
-    private PandaDBusServer dbusServer;
-    
+    //private PandaDBusServer dbusServer;
+   
     protected Gee.List<PandaAbstractServer> channels;
     
     
@@ -14,22 +15,19 @@ public class PandaChannelManager : GLib.Object{
         manager  = new PandaPluginManager();
         httpServer = new PandaHttpServer(8088);
         socketServer = new PandaSocketServer();
-        dbusServer = new PandaDBusServer();
+        //dbusServer = new PandaDBusServer();
         socketServer.manager = manager;
         httpServer.manager = manager;      
-        dbusServer.manager = manager;
-              
+        //dbusServer.manager = manager;    
     }
     public int startup(){
-        /*httpServer.init();    
-        httpServer.run();*/
         initServer(httpServer);
         initServer(socketServer);
-        initServer(dbusServer);
+        //initServer(dbusServer);
         runServer(httpServer);
         runServer(socketServer);
-        runServer(dbusServer);
-        //manager.loadM();
+        //runServer(dbusServer);
+       
         return 0;  
     }
     public void initServer(PandaAbstractServer server) {
@@ -38,4 +36,5 @@ public class PandaChannelManager : GLib.Object{
     public async void runServer(PandaAbstractServer server) {
         server.run();
     }
+   
 }

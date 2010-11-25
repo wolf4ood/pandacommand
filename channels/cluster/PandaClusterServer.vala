@@ -1,23 +1,21 @@
 using Json;
 using Gee;
 
-public class PandaSocketServer : PandaAbstractServer {
+public class PandaClusterServer : PandaAbstractServer {
 
   private SocketService server = new SocketService();
   
-  public PandaSocketServer(){    
+  public PandaClusterServer(){    
 
   }
   public override void init(){
     
     try {
-        server.add_inet_port (3333, null);
+        server.add_inet_port (3334, null);
         server.incoming.connect (on_incoming_connection);
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
-    manager.loaded.connect(add_handler);
-    manager.unloaded.connect(remove_handler);
 
   }
   public override void run(){   
@@ -40,6 +38,9 @@ public class PandaSocketServer : PandaAbstractServer {
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
+  }
+  protected async void send_request() {
+  
   }
   protected bool on_incoming_connection (SocketConnection conn) {
     stdout.printf ("Got incoming connection\n");
